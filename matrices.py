@@ -24,7 +24,7 @@ def create_matrix_manual():
     for i in range(rows):
         row = list(map(float, input(f"Рядок {i+1}: ").split()))
         while len(row) != cols:
-            print(f"Кількість елементів має бути {cols}")
+            print(f"❗️Кількість елементів має бути {cols}")
             row = list(map(float, input(f"Рядок {i+1}: ").split()))
         elements.append(row)
     matrix = np.array(elements)
@@ -32,25 +32,55 @@ def create_matrix_manual():
     return matrix
 
 
+def get_basis(A):
+    U, S, Vt = np.linalg.svd(A)
+    rank = np.linalg.matrix_rank(A)
+    basis = Vt[:rank].T  
+    print("\nБазис матриці (по стовпцях):\n", np.round(basis, 3))
+    return basis
+
+
 def matrix_operations(A, B=None):
-    print("\n=== Операції над матрицею A ===")
-    print("Транспонована матриця:\n", A.T)
-    print("Норма матриці:", np.linalg.norm(A))
+    print("\n=== ОПЕРАЦІЇ НАД МАТРИЦЯМИ ===")
+
+    print("\n Транспонована матриця Aᵀ:\n", A.T)
+
+    print(" Норма матриці ||A|| =", np.linalg.norm(A))
+
     if A.shape[0] == A.shape[1]:
         det = np.linalg.det(A)
-        print("Визначник:", round(det, 3))
+        print("\n Визначник det(A) =", round(det, 3))
         if det != 0:
             inv = np.linalg.inv(A)
-            print("Обернена матриця:\n", np.round(inv, 3))
+            print(" Обернена матриця A⁻¹:\n", np.round(inv, 3))
         else:
-            print("Обернена матриця не існує (det = 0)")
+            print(" Обернена матриця не існує (det = 0)")
     else:
-        print("Обернена матриця не обчислюється (не квадратна).")
+        print(" Обернена матриця не обчислюється (A не квадратна).")
 
-    if B is not None and A.shape == B.shape:
-        print("\nA + B =\n", A + B)
-    if B is not None and A.shape[1] == B.shape[0]:
-        print("\nA × B =\n", np.dot(A, B))
+    dim = min(A.shape)
+    I = np.eye(dim)
+    print(f"\n Одинична матриця розмірності {dim}x{dim}:\n", I)
+
+    get_basis(A)
+
+    if B is not None:
+        print("\n=== ОПЕРАЦІЇ НАД ДВОМА МАТРИЦЯМИ ===")
+
+        if A.shape == B.shape:
+            print("\n Сума матриць A + B =\n", A + B)
+            print("\n Покомпонентне множення A ⊙ B =\n", A * B)
+
+        if A.shape[1] == B.shape[0]:
+            print("\n Матричний добуток A × B =\n", np.dot(A, B))
+        else:
+            print("\n Добуток A×B неможливий (несумісні розміри).")
+
+    try:
+        scalar = float(input("\nВведіть скаляр для множення: "))
+        print(f"\n A × {scalar} =\n", A * scalar)
+    except ValueError:
+        print(" Некоректне значення скаляра — пропускаємо операцію.")
 
 
 def main():
@@ -70,7 +100,7 @@ def main():
         A = create_matrix_manual()
         B = create_matrix_manual()
     else:
-        print("Невірний вибір.")
+        print(" Невірний вибір.")
         return
 
     print("\nМатриця A:\n", A)
