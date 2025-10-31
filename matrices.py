@@ -1,112 +1,129 @@
 import numpy as np
 
-def create_matrix_random():
-    rows = np.random.randint(2, 6)
-    cols = np.random.randint(2, 6)
-    matrix = np.random.randint(-10, 10, size=(rows, cols))
-    print(f"\nВипадково створена матриця ({rows}x{cols}):\n", matrix)
-    return matrix
+
+def get_matrix(n: int, m: int) -> np.ndarray:
+    """Create random matrix n * m.
+
+    Args:
+        n (int): number of rows.
+        m (int): number of columns.
+
+    Returns:
+        np.ndarray: matrix n*m.
+    """
+    return np.random.rand(n, m)
 
 
-def create_matrix_random_with_size():
-    rows = int(input("Введіть кількість рядків: "))
-    cols = int(input("Введіть кількість стовпців: "))
-    matrix = np.random.randint(-10, 10, size=(rows, cols))
-    print(f"\nВипадкова матриця ({rows}x{cols}):\n", matrix)
-    return matrix
+def add(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """Matrix addition.
+
+    Args:
+        x (np.ndarray): 1st matrix.
+        y (np.ndarray): 2nd matrix.
+
+    Returns:
+        np.ndarray: matrix sum.
+    """
+    return x + y
 
 
-def create_matrix_manual():
-    rows = int(input("Введіть кількість рядків: "))
-    cols = int(input("Введіть кількість стовпців: "))
-    print("Введіть елементи матриці по рядках:")
-    elements = []
-    for i in range(rows):
-        row = list(map(float, input(f"Рядок {i+1}: ").split()))
-        while len(row) != cols:
-            print(f"❗️Кількість елементів має бути {cols}")
-            row = list(map(float, input(f"Рядок {i+1}: ").split()))
-        elements.append(row)
-    matrix = np.array(elements)
-    print(f"\nВведена матриця:\n", matrix)
-    return matrix
+def scalar_multiplication(x: np.ndarray, a: float) -> np.ndarray:
+    """Matrix multiplication by scalar.
+
+    Args:
+        x (np.ndarray): matrix.
+        a (float): scalar.
+
+    Returns:
+        np.ndarray: multiplied matrix.
+    """
+    return a * x
 
 
-def get_basis(A):
-    U, S, Vt = np.linalg.svd(A)
-    rank = np.linalg.matrix_rank(A)
-    basis = Vt[:rank].T  
-    print("\nБазис матриці (по стовпцях):\n", np.round(basis, 3))
-    return basis
+def dot_product(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """Matrices dot product.
+
+    Args:
+        x (np.ndarray): 1st matrix.
+        y (np.ndarray): 2nd matrix or vector.
+
+    Returns:
+        np.ndarray: dot product.
+    """
+    return x @ y
 
 
-def matrix_operations(A, B=None):
-    print("\n=== ОПЕРАЦІЇ НАД МАТРИЦЯМИ ===")
+def identity_matrix(dim: int) -> np.ndarray:
+    """Create identity matrix with dimension `dim`. 
 
-    print("\n Транспонована матриця Aᵀ:\n", A.T)
+    Args:
+        dim (int): matrix dimension.
 
-    print(" Норма матриці ||A|| =", np.linalg.norm(A))
-
-    if A.shape[0] == A.shape[1]:
-        det = np.linalg.det(A)
-        print("\n Визначник det(A) =", round(det, 3))
-        if det != 0:
-            inv = np.linalg.inv(A)
-            print(" Обернена матриця A⁻¹:\n", np.round(inv, 3))
-        else:
-            print(" Обернена матриця не існує (det = 0)")
-    else:
-        print(" Обернена матриця не обчислюється (A не квадратна).")
-
-    dim = min(A.shape)
-    I = np.eye(dim)
-    print(f"\n Одинична матриця розмірності {dim}x{dim}:\n", I)
-
-    get_basis(A)
-
-    if B is not None:
-        print("\n=== ОПЕРАЦІЇ НАД ДВОМА МАТРИЦЯМИ ===")
-
-        if A.shape == B.shape:
-            print("\n Сума матриць A + B =\n", A + B)
-            print("\n Покомпонентне множення A ⊙ B =\n", A * B)
-
-        if A.shape[1] == B.shape[0]:
-            print("\n Матричний добуток A × B =\n", np.dot(A, B))
-        else:
-            print("\n Добуток A×B неможливий (несумісні розміри).")
-
-    try:
-        scalar = float(input("\nВведіть скаляр для множення: "))
-        print(f"\n A × {scalar} =\n", A * scalar)
-    except ValueError:
-        print(" Некоректне значення скаляра — пропускаємо операцію.")
+    Returns:
+        np.ndarray: identity matrix.
+    """
+    return np.eye(dim)
 
 
-def main():
-    print("=== СТВОРЕННЯ МАТРИЦІ ===")
-    print("1 — Повністю випадкова матриця")
-    print("2 — Випадкова матриця із заданими розмірами")
-    print("3 — Ручне введення матриці")
-    choice = input("Оберіть спосіб створення матриць (1/2/3): ")
+def matrix_inverse(x: np.ndarray) -> np.ndarray:
+    """Compute inverse matrix.
 
-    if choice == "1":
-        A = create_matrix_random()
-        B = create_matrix_random()
-    elif choice == "2":
-        A = create_matrix_random_with_size()
-        B = create_matrix_random_with_size()
-    elif choice == "3":
-        A = create_matrix_manual()
-        B = create_matrix_manual()
-    else:
-        print(" Невірний вибір.")
-        return
+    Args:
+        x (np.ndarray): matrix.
 
-    print("\nМатриця A:\n", A)
-    print("Матриця B:\n", B)
-    matrix_operations(A, B)
+    Returns:
+        np.ndarray: inverse matrix.
+    """
+    return np.linalg.inv(x)
 
 
-if __name__ == "__main__":
-    main()
+def matrix_transpose(x: np.ndarray) -> np.ndarray:
+    """Compute transpose matrix.
+
+    Args:
+        x (np.ndarray): matrix.
+
+    Returns:
+        np.ndarray: transosed matrix.
+    """
+    return x.T
+
+
+def hadamard_product(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """Compute hadamard product.
+
+    Args:
+        x (np.ndarray): 1th matrix.
+        y (np.ndarray): 2nd matrix.
+
+    Returns:
+        np.ndarray: hadamard produc
+    """
+    return x * y
+
+
+def basis(x: np.ndarray) -> tuple[int]:
+    """Compute matrix basis.
+
+    Args:
+        x (np.ndarray): matrix.
+
+    Returns:
+        tuple[int]: indexes of basis columns.
+    """
+    Q, R = np.linalg.qr(x)
+    
+    return tuple(i for i, r in enumerate(np.abs(np.diag(R)) > 1e-10))
+
+
+def norm(x: np.ndarray, order: int | float | str) -> float:
+    """Matrix norm: Frobenius, Spectral or Max.
+
+    Args:
+        x (np.ndarray): vector
+        order (int | float): norm's order: 'fro', 2 or inf.
+
+    Returns:
+        float: vector norm
+    """
+    return float(np.linalg.norm(x, order))
